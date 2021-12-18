@@ -32,11 +32,19 @@ bool ShaderManager::AddShader(std::string filePath, unsigned int shaderType) {
 	if (shaderType == GL_FRAGMENT_SHADER) { fragmentShaderId = shader; }
 	std::string shaderString = buffer.str();
 	const char* cString = shaderString.c_str();
+	reader.close();
 	glShaderSource(shader, 1, &cString, NULL);
 	glCompileShader(shader);
-	// TODO: Check for shader errors
-
-	reader.close();
+	// Check for compilation errors
+	int success;
+	char infoLog[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success) {
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		std::cout << "ShaderManager.AddShader Failed: Compilation error. " << infoLog << "\n";
+		return false;
+	}
+	return true;
 }
 
 bool ShaderManager::BuildProgram(std::string newName) {
@@ -98,5 +106,35 @@ bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y, flo
 	}
 	// TODO: Error check
 	glUniform4f(uniformLocation, x, y, z, w);
+	return true;
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y) {
+	if (activeProgramId < 0) {
+		std::cerr << "ShaderManager.ModifyUniform Failed: No program active.\n";
+		return false;
+	}
+	auto uniformLocation = glGetUniformLocation(activeProgramId, uniformName.c_str());
+	if (uniformLocation < 0) {
+		std::cerr << "ShaderManager.ModifyUniform Failed: Invalid uniform provided.\n";
+		return false;
+	}
+	// TODO: Error check
+	glUniform2f(uniformLocation, x, y);
+	return true;
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, float val) {
+	if (activeProgramId < 0) {
+		std::cerr << "ShaderManager.ModifyUniform Failed: No program active.\n";
+		return false;
+	}
+	auto uniformLocation = glGetUniformLocation(activeProgramId, uniformName.c_str());
+	if (uniformLocation < 0) {
+		std::cerr << "ShaderManager.ModifyUniform Failed: Invalid uniform provided. " << uniformName << "\n";
+		return false;
+	}
+	// TODO: Error check
+	glUniform1f(uniformLocation, val);
 	return true;
 }
