@@ -10,6 +10,19 @@ ShaderManager::ShaderManager() {
 	activeProgramId = -1;
 }
 
+unsigned int ShaderManager::GetUniformId(std::string uniformName) {
+	if (activeProgramId < 0) {
+		std::cerr << "ShaderManager.ModifyUniform Failed: No program active.\n";
+		return -1;
+	}
+	auto uniformLocation = glGetUniformLocation(activeProgramId, uniformName.c_str());
+	if (uniformLocation < 0) {
+		std::cerr << "ShaderManager.ModifyUniform Failed: Invalid uniform provided. " << uniformName << "\n";
+		return -1;
+	}
+	return uniformLocation;
+}
+
 bool ShaderManager::AddShader(std::string filePath, unsigned int shaderType) {
 	// If there is no matching shader enum, then this function fails
 	if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER) {
@@ -95,46 +108,25 @@ unsigned int ShaderManager::GetProgram(std::string programName) {
 }
 
 bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y, float z, float w) {
-	if (activeProgramId < 0) {
-		std::cerr << "ShaderManager.ModifyUniform Failed: No program active.\n";
-		return false;
-	}
-	auto uniformLocation = glGetUniformLocation(activeProgramId, uniformName.c_str());
-	if (uniformLocation < 0) {
-		std::cerr << "ShaderManager.ModifyUniform Failed: Invalid uniform provided.\n";
-		return false;
-	}
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
 	// TODO: Error check
-	glUniform4f(uniformLocation, x, y, z, w);
+	glUniform4f(uniformVal, x, y, z, w);
 	return true;
 }
 
 bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y) {
-	if (activeProgramId < 0) {
-		std::cerr << "ShaderManager.ModifyUniform Failed: No program active.\n";
-		return false;
-	}
-	auto uniformLocation = glGetUniformLocation(activeProgramId, uniformName.c_str());
-	if (uniformLocation < 0) {
-		std::cerr << "ShaderManager.ModifyUniform Failed: Invalid uniform provided.\n";
-		return false;
-	}
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
 	// TODO: Error check
-	glUniform2f(uniformLocation, x, y);
+	glUniform2f(uniformVal, x, y);
 	return true;
 }
 
 bool ShaderManager::ModifyUniform(std::string uniformName, float val) {
-	if (activeProgramId < 0) {
-		std::cerr << "ShaderManager.ModifyUniform Failed: No program active.\n";
-		return false;
-	}
-	auto uniformLocation = glGetUniformLocation(activeProgramId, uniformName.c_str());
-	if (uniformLocation < 0) {
-		std::cerr << "ShaderManager.ModifyUniform Failed: Invalid uniform provided. " << uniformName << "\n";
-		return false;
-	}
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
 	// TODO: Error check
-	glUniform1f(uniformLocation, val);
+	glUniform1f(uniformVal, val);
 	return true;
 }

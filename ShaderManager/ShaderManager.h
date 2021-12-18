@@ -7,6 +7,7 @@ private:
 	int fragmentShaderId;
 	int activeProgramId;
 	std::unordered_map<std::string, unsigned int> programs;
+	unsigned int GetUniformId(std::string uniformName);
 public:
 	ShaderManager();
 	bool AddShader(std::string filePath, unsigned int shaderType);
