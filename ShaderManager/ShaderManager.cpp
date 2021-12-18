@@ -115,6 +115,14 @@ bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y, flo
 	return true;
 }
 
+bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y, float z) {
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+	// TODO: Error check
+	glUniform3f(uniformVal, x, y, z);
+	return true;
+}
+
 bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y) {
 	unsigned int uniformVal = GetUniformId(uniformName);
 	if (uniformVal < 0) return false;
@@ -128,5 +136,37 @@ bool ShaderManager::ModifyUniform(std::string uniformName, float val) {
 	if (uniformVal < 0) return false;
 	// TODO: Error check
 	glUniform1f(uniformVal, val);
+	return true;
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x) {
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+	// TODO: Error check
+	glUniform1i(uniformVal, x);
+	return true;
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x, unsigned int y) {
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+	// TODO: Error check
+	glUniform2i(uniformVal, x, y);
+	return true;
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x, unsigned int y, unsigned int z) {
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+	// TODO: Error check
+	glUniform3i(uniformVal, x, y, z);
+	return true;
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x, unsigned int y, unsigned int z, unsigned int w) {
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+	// TODO: Error check
+	glUniform4i(uniformVal, x, y, z, w);
 	return true;
 }
