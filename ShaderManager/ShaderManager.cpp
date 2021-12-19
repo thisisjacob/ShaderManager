@@ -107,66 +107,118 @@ unsigned int ShaderManager::GetProgram(std::string programName) {
 	return program->second;
 }
 
-bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y, float z, float w) {
+
+bool ShaderManager::ModifyUniform(std::string uniformName, std::initializer_list<int> args) {
+	int numArgs = args.size();
+	if (numArgs == 0 || numArgs > 4) {
+		std::cout << "ShaderManager.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
+		return false;
+	}
+	int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+
+	const int* firstElement = args.begin();
+	if (numArgs == 1)
+		glUniform1iv(uniformVal, 1, firstElement);
+	if (numArgs == 2)
+		glUniform2iv(uniformVal, 1, firstElement);
+	if (numArgs == 3)
+		glUniform3iv(uniformVal, 1, firstElement);
+	if (numArgs == 4)
+		glUniform4iv(uniformVal, 1, firstElement);
+
+	auto err = glGetError();
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, std::initializer_list<float> args) {
+	int numArgs = args.size();
+	if (numArgs == 0 || numArgs > 4) {
+		std::cout << "ShaderManager.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
+		return false;
+	}
+	int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+
+	const float* firstElement = args.begin();
+	if (numArgs == 1)
+		glUniform1fv(uniformVal, 1, firstElement);
+	if (numArgs == 2)
+		glUniform2fv(uniformVal, 1, firstElement);
+	if (numArgs == 3)
+		glUniform3fv(uniformVal, 1, firstElement);
+	if (numArgs == 4)
+		glUniform4fv(uniformVal, 1, firstElement);
+
+	auto err = glGetError();
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, std::initializer_list<unsigned int> args) {
+	int numArgs = args.size();
+	if (numArgs == 0 || numArgs > 4) {
+		std::cout << "ShaderManager.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
+		return false;
+	}
+	int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+
+	const unsigned int* firstElement = args.begin();
+	if (numArgs == 1)
+		glUniform1uiv(uniformVal, 1, firstElement);
+	if (numArgs == 2)
+		glUniform2uiv(uniformVal, 1, firstElement);
+	if (numArgs == 3)
+		glUniform3uiv(uniformVal, 1, firstElement);
+	if (numArgs == 4)
+		glUniform4uiv(uniformVal, 1, firstElement);
+
+	auto err = glGetError();
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, std::initializer_list<double> args) {
+	int numArgs = args.size();
+	if (numArgs == 0 || numArgs > 4) {
+		std::cout << "ShaderManager.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
+		return false;
+	}
+	int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+
+	const double* firstElement = args.begin();
+	if (numArgs == 1)
+		glUniform1dv(uniformVal, 1, firstElement);
+	if (numArgs == 2)
+		glUniform2dv(uniformVal, 1, firstElement);
+	if (numArgs == 3)
+		glUniform3dv(uniformVal, 1, firstElement);
+	if (numArgs == 4)
+		glUniform4dv(uniformVal, 1, firstElement);
+
+	auto err = glGetError();
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, int val) {
 	unsigned int uniformVal = GetUniformId(uniformName);
 	if (uniformVal < 0) return false;
-	// TODO: Error check
-	glUniform4f(uniformVal, x, y, z, w);
+	glUniform1i(uniformVal, val);
 	return true;
 }
 
-bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y, float z) {
+bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int val) {
 	unsigned int uniformVal = GetUniformId(uniformName);
 	if (uniformVal < 0) return false;
-	// TODO: Error check
-	glUniform3f(uniformVal, x, y, z);
-	return true;
-}
-
-bool ShaderManager::ModifyUniform(std::string uniformName, float x, float y) {
-	unsigned int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-	// TODO: Error check
-	glUniform2f(uniformVal, x, y);
+	glUniform1ui(uniformVal, val);
 	return true;
 }
 
 bool ShaderManager::ModifyUniform(std::string uniformName, float val) {
 	unsigned int uniformVal = GetUniformId(uniformName);
 	if (uniformVal < 0) return false;
-	// TODO: Error check
 	glUniform1f(uniformVal, val);
 	return true;
 }
-
-bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x) {
+bool ShaderManager::ModifyUniform(std::string uniformName, double val) {
 	unsigned int uniformVal = GetUniformId(uniformName);
 	if (uniformVal < 0) return false;
-	// TODO: Error check
-	glUniform1i(uniformVal, x);
-	return true;
-}
-
-bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x, unsigned int y) {
-	unsigned int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-	// TODO: Error check
-	glUniform2i(uniformVal, x, y);
-	return true;
-}
-
-bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x, unsigned int y, unsigned int z) {
-	unsigned int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-	// TODO: Error check
-	glUniform3i(uniformVal, x, y, z);
-	return true;
-}
-
-bool ShaderManager::ModifyUniform(std::string uniformName, unsigned int x, unsigned int y, unsigned int z, unsigned int w) {
-	unsigned int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-	// TODO: Error check
-	glUniform4i(uniformVal, x, y, z, w);
+	glUniform1d(uniformVal, val);
 	return true;
 }
