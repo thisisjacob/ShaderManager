@@ -12,12 +12,12 @@ private:
 	int fragmentShaderId;
 	int programId;
 	bool isBuilt;
-	unsigned int GetUniformId(std::string uniformName);
 public:
 	Shader();
 	bool AddShader(std::string filePath, unsigned int shaderType);
 	bool BuildProgram(std::string newName);
 	bool UseProgram(std::string programName);
+	unsigned int GetUniformId(std::string uniformName);
 	bool ModifyUniform(std::string uniformName, std::initializer_list<int> args);
 	bool ModifyUniform(std::string uniformName, std::initializer_list<unsigned int> args);
 	bool ModifyUniform(std::string uniformName, std::initializer_list<float> args);
