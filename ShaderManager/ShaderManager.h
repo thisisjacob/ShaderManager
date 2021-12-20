@@ -27,5 +27,7 @@ public:
 	bool ModifyUniform(std::string uniformName, unsigned int val);
 	bool ModifyUniform(std::string uniformName, float val);
 	bool ModifyUniform(std::string uniformName, double val);
-	bool ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix);
+	bool ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix, bool trans);
+	bool ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix, int numMatrices, bool trans);
+
 };

@@ -103,7 +103,6 @@ unsigned int ShaderManager::GetProgram(std::string programName) {
 	return program->second;
 }
 
-
 bool ShaderManager::ModifyUniform(std::string uniformName, std::initializer_list<int> args) {
 	int numArgs = args.size();
 	if (numArgs == 0 || numArgs > 4) {
@@ -219,28 +218,33 @@ bool ShaderManager::ModifyUniform(std::string uniformName, double val) {
 	return true;
 }
 
-bool ShaderManager::ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix) {
+bool ShaderManager::ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix, bool trans) {
+	return ModifyUniform(uniformName, rows, cols, matrix, 1, trans);
+}
+
+bool ShaderManager::ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix, int numMatrices, bool trans) {
 	unsigned int uniformVal = GetUniformId(uniformName);
 	if (uniformVal < 0) return false;
 	// Determine which uniform function to use
+	auto transEnum = trans ? GL_TRUE : GL_FALSE;
 	if (rows == 2 && cols == 2)
-		glUniformMatrix2fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix2fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 3 && cols == 3)
-		glUniformMatrix3fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix3fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 4 && cols == 4)
-		glUniformMatrix4fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix4fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 2 && cols == 3)
-		glUniformMatrix2x3fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix2x3fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 3 && cols == 2)
-		glUniformMatrix3x2fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix3x2fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 2 && cols == 4)
-		glUniformMatrix2x4fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix2x4fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 4 && cols == 2)
-		glUniformMatrix4x2fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix4x2fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 3 && cols == 4)
-		glUniformMatrix3x4fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix3x4fv(uniformVal, numMatrices, transEnum, matrix);
 	else if (rows == 4 && cols == 3)
-		glUniformMatrix4x3fv(uniformVal, 1, GL_FALSE, matrix);
+		glUniformMatrix4x3fv(uniformVal, numMatrices, transEnum, matrix);
 	else {
 		std::cerr << "ShaderManager::ModifyUniform(std::string, int, int, const glm::f32*) failed. Invalid number of rows and columns provided.";
 		return false;
