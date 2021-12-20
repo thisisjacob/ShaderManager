@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <glm/glm.hpp>
 
 class ShaderManager {
 private:
@@ -26,4 +27,5 @@ public:
 	bool ModifyUniform(std::string uniformName, unsigned int val);
 	bool ModifyUniform(std::string uniformName, float val);
 	bool ModifyUniform(std::string uniformName, double val);
+	bool ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix);
 };

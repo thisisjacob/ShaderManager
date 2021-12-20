@@ -218,3 +218,33 @@ bool ShaderManager::ModifyUniform(std::string uniformName, double val) {
 	glUniform1d(uniformVal, val);
 	return true;
 }
+
+bool ShaderManager::ModifyUniform(std::string uniformName, int rows, int cols, const glm::f32* matrix) {
+	unsigned int uniformVal = GetUniformId(uniformName);
+	if (uniformVal < 0) return false;
+	// Determine which uniform function to use
+	if (rows == 2 && cols == 2)
+		glUniformMatrix2fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 3 && cols == 3)
+		glUniformMatrix3fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 4 && cols == 4)
+		glUniformMatrix4fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 2 && cols == 3)
+		glUniformMatrix2x3fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 3 && cols == 2)
+		glUniformMatrix3x2fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 2 && cols == 4)
+		glUniformMatrix2x4fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 4 && cols == 2)
+		glUniformMatrix4x2fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 3 && cols == 4)
+		glUniformMatrix3x4fv(uniformVal, 1, GL_FALSE, matrix);
+	else if (rows == 4 && cols == 3)
+		glUniformMatrix4x3fv(uniformVal, 1, GL_FALSE, matrix);
+	else {
+		std::cerr << "ShaderManager::ModifyUniform(std::string, int, int, const glm::f32*) failed. Invalid number of rows and columns provided.";
+		return false;
+	}
+	// TODO: check errors with glGetError()
+	return true;
+}
