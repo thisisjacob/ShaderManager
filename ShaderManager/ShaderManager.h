@@ -1,5 +1,9 @@
 #pragma once
 #include <unordered_map>
+#include <glad/glad.h>
+#include <sstream>
+#include <fstream>
+#include <iostream>
 
 class ShaderManager {
 private:

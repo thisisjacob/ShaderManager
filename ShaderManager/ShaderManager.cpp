@@ -1,8 +1,4 @@
 #include "ShaderManager.h"
-#include <glad/glad.h>
-#include <sstream>
-#include <fstream>
-#include <iostream>
 
 ShaderManager::ShaderManager() {
 	vertexShaderId = -1;
