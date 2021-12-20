@@ -87,92 +87,59 @@ bool Shader::UseProgram(std::string programName) {
 	return true;
 }
 
-bool Shader::ModifyUniform(std::string uniformName, std::initializer_list<int> args) {
-	int numArgs = args.size();
-	if (numArgs == 0 || numArgs > 4) {
-		std::cout << "Shader.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
-		return false;
-	}
+template <typename T>
+bool Shader::ModifyUniform(std::string uniformName, const T* array, int numVecs, int vecSize) {
+	// Ensure that the provided data is numeric, and that the vector size is valid
+	static_assert(std::is_arithmetic<T>::value, "Shader::ModifyUniform(std::string, const T*, int, int) failed. Non numeric type passed.");
+	static_assert(vecSize <= 4 && vecSize > 0, "Shader::ModifyUniform(std::string, const T*, int, int) failed. vecSize invalid: must be greater than 0, or less than or equal to 4.");
+
+	// Get uniform location, validate
 	int uniformVal = GetUniformId(uniformName);
 	if (uniformVal < 0) return false;
 
-	const int* firstElement = args.begin();
-	if (numArgs == 1)
-		glUniform1iv(uniformVal, 1, firstElement);
-	if (numArgs == 2)
-		glUniform2iv(uniformVal, 1, firstElement);
-	if (numArgs == 3)
-		glUniform3iv(uniformVal, 1, firstElement);
-	if (numArgs == 4)
-		glUniform4iv(uniformVal, 1, firstElement);
-
-	auto err = glGetError();
-}
-
-bool Shader::ModifyUniform(std::string uniformName, std::initializer_list<float> args) {
-	int numArgs = args.size();
-	if (numArgs == 0 || numArgs > 4) {
-		std::cout << "Shader.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
-		return false;
+	if (std::is_same<T, int>::value) {
+		if (vecSize == 1)
+			glUniform1iv(uniformVal, numVecs, array);
+		else if (vecSize == 2)
+			glUniform2iv(uniformVal, numVecs, array);
+		else if (vecSize == 3)
+			glUniform3iv(uniformVal, numVecs, array);
+		else if (vecSize == 4)
+			glUniform4iv(uniformVal, numVecs, array);
 	}
-	int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-
-	const float* firstElement = args.begin();
-	if (numArgs == 1)
-		glUniform1fv(uniformVal, 1, firstElement);
-	if (numArgs == 2)
-		glUniform2fv(uniformVal, 1, firstElement);
-	if (numArgs == 3)
-		glUniform3fv(uniformVal, 1, firstElement);
-	if (numArgs == 4)
-		glUniform4fv(uniformVal, 1, firstElement);
-
-	auto err = glGetError();
-}
-
-bool Shader::ModifyUniform(std::string uniformName, std::initializer_list<unsigned int> args) {
-	int numArgs = args.size();
-	if (numArgs == 0 || numArgs > 4) {
-		std::cout << "Shader.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
-		return false;
+	else if (std::is_same<T, unsigned int>::value) {
+		if (vecSize == 1)
+			glUniform1uiv(uniformVal, numVecs, array);
+		else if (vecSize == 2)
+			glUniform2uiv(uniformVal, numVecs, array);
+		else if (vecSize == 3)
+			glUniform3uiv(uniformVal, numVecs, array);
+		else if (vecSize == 4)
+			glUniform4uiv(uniformVal, numVecs, array);
 	}
-	int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-
-	const unsigned int* firstElement = args.begin();
-	if (numArgs == 1)
-		glUniform1uiv(uniformVal, 1, firstElement);
-	if (numArgs == 2)
-		glUniform2uiv(uniformVal, 1, firstElement);
-	if (numArgs == 3)
-		glUniform3uiv(uniformVal, 1, firstElement);
-	if (numArgs == 4)
-		glUniform4uiv(uniformVal, 1, firstElement);
-
-	auto err = glGetError();
-}
-
-bool Shader::ModifyUniform(std::string uniformName, std::initializer_list<double> args) {
-	int numArgs = args.size();
-	if (numArgs == 0 || numArgs > 4) {
-		std::cout << "Shader.ModifyUniform failed. Invalid number of arguments: " << numArgs << "\n";
-		return false;
+	else if (std::is_same<T, float>::value) {
+		if (vecSize == 1)
+			glUniform1fv(uniformVal, numVecs, array);
+		else if (vecSize == 2)
+			glUniform2fv(uniformVal, numVecs, array);
+		else if (vecSize == 3)
+			glUniform3fv(uniformVal, numVecs, array);
+		else if (vecSize == 4)
+			glUniform4fv(uniformVal, numVecs, array);
 	}
-	int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-
-	const double* firstElement = args.begin();
-	if (numArgs == 1)
-		glUniform1dv(uniformVal, 1, firstElement);
-	if (numArgs == 2)
-		glUniform2dv(uniformVal, 1, firstElement);
-	if (numArgs == 3)
-		glUniform3dv(uniformVal, 1, firstElement);
-	if (numArgs == 4)
-		glUniform4dv(uniformVal, 1, firstElement);
+	else if (std::is_same<T, double>::value) {
+		if (vecSize == 1)
+			glUniform1dv(uniformVal, numVecs, array);
+		else if (vecSize == 2)
+			glUniform2dv(uniformVal, numVecs, array);
+		else if (vecSize == 3)
+			glUniform3dv(uniformVal, numVecs, array);
+		else if (vecSize == 4)
+			glUniform4dv(uniformVal, numVecs, array);
+	}
 
 	auto err = glGetError();
+	return true;
 }
 
 bool Shader::ModifyUniform(std::string uniformName, int val) {
