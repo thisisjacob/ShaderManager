@@ -78,67 +78,14 @@ bool Shader::BuildProgram(std::string newName) {
 	glDeleteShader(fragmentShaderId);
 	vertexShaderId = -1;
 	fragmentShaderId = -1;
+
+	return true;
 }
 
 bool Shader::UseProgram(std::string programName) {
 	// Enable program
 	glUseProgram(programId);
 	// TODO: Check for errors
-	return true;
-}
-
-template <typename T>
-bool Shader::ModifyUniform(std::string uniformName, const T* array, int numVecs, int vecSize) {
-	// Ensure that the provided data is numeric, and that the vector size is valid
-	static_assert(std::is_arithmetic<T>::value, "Shader::ModifyUniform(std::string, const T*, int, int) failed. Non numeric type passed.");
-	static_assert(vecSize <= 4 && vecSize > 0, "Shader::ModifyUniform(std::string, const T*, int, int) failed. vecSize invalid: must be greater than 0, or less than or equal to 4.");
-
-	// Get uniform location, validate
-	int uniformVal = GetUniformId(uniformName);
-	if (uniformVal < 0) return false;
-
-	if (std::is_same<T, int>::value) {
-		if (vecSize == 1)
-			glUniform1iv(uniformVal, numVecs, array);
-		else if (vecSize == 2)
-			glUniform2iv(uniformVal, numVecs, array);
-		else if (vecSize == 3)
-			glUniform3iv(uniformVal, numVecs, array);
-		else if (vecSize == 4)
-			glUniform4iv(uniformVal, numVecs, array);
-	}
-	else if (std::is_same<T, unsigned int>::value) {
-		if (vecSize == 1)
-			glUniform1uiv(uniformVal, numVecs, array);
-		else if (vecSize == 2)
-			glUniform2uiv(uniformVal, numVecs, array);
-		else if (vecSize == 3)
-			glUniform3uiv(uniformVal, numVecs, array);
-		else if (vecSize == 4)
-			glUniform4uiv(uniformVal, numVecs, array);
-	}
-	else if (std::is_same<T, float>::value) {
-		if (vecSize == 1)
-			glUniform1fv(uniformVal, numVecs, array);
-		else if (vecSize == 2)
-			glUniform2fv(uniformVal, numVecs, array);
-		else if (vecSize == 3)
-			glUniform3fv(uniformVal, numVecs, array);
-		else if (vecSize == 4)
-			glUniform4fv(uniformVal, numVecs, array);
-	}
-	else if (std::is_same<T, double>::value) {
-		if (vecSize == 1)
-			glUniform1dv(uniformVal, numVecs, array);
-		else if (vecSize == 2)
-			glUniform2dv(uniformVal, numVecs, array);
-		else if (vecSize == 3)
-			glUniform3dv(uniformVal, numVecs, array);
-		else if (vecSize == 4)
-			glUniform4dv(uniformVal, numVecs, array);
-	}
-
-	auto err = glGetError();
 	return true;
 }
 
