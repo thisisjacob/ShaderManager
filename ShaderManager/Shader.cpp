@@ -83,9 +83,23 @@ bool Shader::BuildProgram() {
 }
 
 bool Shader::UseProgram() {
-	// Enable program
+	// Check that program is built
+	if (programId < 0) {
+		std::cerr << "Failed to call Shader::UseProgram. Shader program not built.\n";
+		return false;
+	}
 	glUseProgram(programId);
-	// TODO: Check for errors
+	auto err = glGetError();
+	// Error checking
+	if (err == GL_INVALID_VALUE) {
+		std::cerr << "Failed to call Shader::UseProgram. glUseProgram operation returned GL_INVALID_VALUE\n";
+		return false;
+	}
+	else if (err == GL_INVALID_OPERATION) {
+		std::cerr << "Failed to call Shader::UseProgram. glUseProgram operation returned GL_INVALID_OPERATION\n";
+		return false;
+	}
+
 	return true;
 }
 
