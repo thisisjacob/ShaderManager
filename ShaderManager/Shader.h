@@ -22,7 +22,7 @@ public:
 	template <typename T>
 	bool ModifyUniform(std::string uniformName, const T* array, int numVecs, int vecSize) {
 		// Ensure that the provided data is numeric, and that the vector size is valid
-		static_assert(std::is_same<T, int>::value || std::is_same<T, unsigned int> || std::is_same<T, float> || std::is_same<T, double>,
+		static_assert(std::is_same<T, int>::value || std::is_same<T, unsigned int>::value || std::is_same<T, float>::value || std::is_same<T, double>::value,
 						"Shader::ModifyUniform(std::string, const T*, int, int) failed. Non numeric type passed.\n");
 		if (vecSize > 4 || vecSize <= 0) {
 			std::cerr << "Shader::ModifyUniform(std::string, const T*, int, int) failed. vecSize invalid: must be greater than 0, or less than or equal to 4.\n";
