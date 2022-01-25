@@ -60,7 +60,7 @@ bool Shader::AddShader(std::string filePath, unsigned int shaderType) {
 	return true;
 }
 
-bool Shader::BuildProgram(std::string newName) {
+bool Shader::BuildProgram() {
 	// Must at least have a vertex and fragment shader
 	if (vertexShaderId == -1 || fragmentShaderId == -1) {
 		std::cerr << "Shader.BuildProgram Failed: No Vertex or Fragment shader compiled.\n";
@@ -82,7 +82,7 @@ bool Shader::BuildProgram(std::string newName) {
 	return true;
 }
 
-bool Shader::UseProgram(std::string programName) {
+bool Shader::UseProgram() {
 	// Enable program
 	glUseProgram(programId);
 	// TODO: Check for errors

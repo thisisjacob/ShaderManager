@@ -16,8 +16,8 @@ private:
 public:
 	Shader();
 	bool AddShader(std::string filePath, unsigned int shaderType);
-	bool BuildProgram(std::string newName);
-	bool UseProgram(std::string programName);
+	bool BuildProgram();
+	bool UseProgram();
 	unsigned int GetUniformId(std::string uniformName);
 	template <typename T>
 	bool ModifyUniform(std::string uniformName, const T* array, int numVecs, int vecSize) {
