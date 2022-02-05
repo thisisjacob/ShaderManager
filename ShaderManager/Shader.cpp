@@ -1,8 +1,6 @@
 #include "Shader.h"
 
 Shader::Shader() {
-	vertexShaderId = -1;
-	fragmentShaderId = -1;
 	programId = -1;
 	isBuilt = false;
 }
@@ -24,8 +22,8 @@ bool Shader::AddShader(std::string filePath, unsigned int shaderType) {
 	// No functionality for changing shaders after program is built, so disallow
 	if (isBuilt)
 		return false;
-	// If there is no matching shader enum, then this function fails
-	if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER) {
+	// Ensure that shaderType is a valid glEnum of a type of shader
+	if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER && shaderType != GL_TESS_CONTROL_SHADER && shaderType != GL_TESS_EVALUATION_SHADER && shaderType != GL_GEOMETRY_SHADER && shaderType != GL_COMPUTE_SHADER) {
 		std::cerr << "Shader.AddShader Failed: Invalid shaderType specified. Must be an OpenGL shader enum.\n";
 		return false;
 	}
@@ -41,8 +39,9 @@ bool Shader::AddShader(std::string filePath, unsigned int shaderType) {
 	buffer << reader.rdbuf();
 	// Prepare shader
 	unsigned int shader = glCreateShader(shaderType);
-	if (shaderType == GL_VERTEX_SHADER) { vertexShaderId = shader; }
-	if (shaderType == GL_FRAGMENT_SHADER) { fragmentShaderId = shader; }
+	// Save or update Id associated with shader
+	shaderTypeIds[shaderType] = shader;
+	// Get and compile shader file contents
 	std::string shaderString = buffer.str();
 	const char* cString = shaderString.c_str();
 	reader.close();
@@ -62,22 +61,23 @@ bool Shader::AddShader(std::string filePath, unsigned int shaderType) {
 
 bool Shader::BuildProgram() {
 	// Must at least have a vertex and fragment shader
-	if (vertexShaderId == -1 || fragmentShaderId == -1) {
+	if (shaderTypeIds.find(GL_FRAGMENT_SHADER) == shaderTypeIds.end() || shaderTypeIds.find(GL_VERTEX_SHADER) == shaderTypeIds.end()) {
 		std::cerr << "Shader.BuildProgram Failed: No Vertex or Fragment shader compiled.\n";
 		return false;
 	}
 	unsigned int newProgram = glCreateProgram();
 	programId = newProgram;
-	glAttachShader(newProgram, vertexShaderId);
-	glAttachShader(newProgram, fragmentShaderId);
+	// Attach all the shaders
+	for (auto shaderTypeId : shaderTypeIds) {
+		glAttachShader(newProgram, shaderTypeId.second);
+	}
 	glLinkProgram(newProgram);
 	// TODO: Check link validity
-	// Should reset shader information if failed
 
-	glDeleteShader(vertexShaderId);
-	glDeleteShader(fragmentShaderId);
-	vertexShaderId = -1;
-	fragmentShaderId = -1;
+	// Deleting compiled shaders
+	for (auto shaderTypeId : shaderTypeIds) {
+		glDeleteShader(shaderTypeId.second);
+	}
 
 	return true;
 }

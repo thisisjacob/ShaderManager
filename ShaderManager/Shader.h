@@ -5,12 +5,12 @@
 #include <fstream>
 #include <iostream>
 #include <glm/glm.hpp>
+#include <unordered_map>
 
 
 class Shader {
 private:
-	int vertexShaderId;
-	int fragmentShaderId;
+	std::unordered_map<unsigned int, unsigned int> shaderTypeIds;
 	int programId;
 	bool isBuilt;
 public:
